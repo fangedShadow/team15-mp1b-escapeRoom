@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 6e46c98e8257f4b46b2cbbecce51b894
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 246334
+  packageName: Low Poly Hand Painted Weapon Pack
+  packageVersion: 1.0
+  assetPath: Assets/Low Poly Hand Painted Weapon Pack/DemoSceneAssets/DemoAnimationAnimators/Pickaxe.controller
+  uploadId: 580500

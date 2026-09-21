@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: b3d12154e9c3f4d43b72c9ca04f00b1a
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 246334
+  packageName: Low Poly Hand Painted Weapon Pack
+  packageVersion: 1.0
+  assetPath: Assets/Low Poly Hand Painted Weapon Pack/DemoSceneAssets/DemoAnimationAnimators/Sword_Fancy.controller
+  uploadId: 580500

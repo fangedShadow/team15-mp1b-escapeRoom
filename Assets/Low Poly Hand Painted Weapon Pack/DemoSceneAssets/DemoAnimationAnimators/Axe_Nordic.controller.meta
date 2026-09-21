@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 0df65f53b3e36fd4f805d69c59f1ed7c
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 246334
+  packageName: Low Poly Hand Painted Weapon Pack
+  packageVersion: 1.0
+  assetPath: Assets/Low Poly Hand Painted Weapon Pack/DemoSceneAssets/DemoAnimationAnimators/Axe_Nordic.controller
+  uploadId: 580500
