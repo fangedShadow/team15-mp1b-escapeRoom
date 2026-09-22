@@ -131,6 +131,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: rust_key
       objectReference: {fileID: 0}
+    - target: {fileID: 374289202576707483, guid: 78df1db2fbc8ec64f949fac0c05bf693, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 2093443782267337543, guid: 78df1db2fbc8ec64f949fac0c05bf693, type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -1215,7 +1219,7 @@ GameObject:
   - component: {fileID: 440835658}
   - component: {fileID: 440835660}
   - component: {fileID: 440835659}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2178,7 +2182,7 @@ GameObject:
   - component: {fileID: 559016273}
   - component: {fileID: 559016272}
   - component: {fileID: 559016271}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube (11)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2520,7 +2524,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 374289202576707483, guid: 78df1db2fbc8ec64f949fac0c05bf693, type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 2093443782267337543, guid: 78df1db2fbc8ec64f949fac0c05bf693, type: 3}
       propertyPath: m_Enabled
@@ -3144,7 +3148,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1767192439, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_CullingMask.m_Bits
-      value: 119
+      value: 511
       objectReference: {fileID: 0}
     - target: {fileID: 1717954561962503725, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_Name
@@ -3152,7 +3156,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1717954561962503726, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 18.539
+      value: -2.29
       objectReference: {fileID: 0}
     - target: {fileID: 1717954561962503726, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_LocalPosition.y
@@ -3164,27 +3168,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1717954561962503726, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.70070803
+      value: 0.7354964
       objectReference: {fileID: 0}
     - target: {fileID: 1717954561962503726, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.032541912
+      value: -0.017011603
       objectReference: {fileID: 0}
     - target: {fileID: 1717954561962503726, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.71249235
+      value: 0.6773147
       objectReference: {fileID: 0}
     - target: {fileID: 1717954561962503726, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.017437426
+      value: 0.00072235154
       objectReference: {fileID: 0}
     - target: {fileID: 1717954561962503726, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 4.04
+      value: -1.49
       objectReference: {fileID: 0}
     - target: {fileID: 1717954561962503726, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -451
+      value: -634.7
       objectReference: {fileID: 0}
     - target: {fileID: 1717954561962503726, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -3847,7 +3851,7 @@ GameObject:
   - component: {fileID: 1229016872}
   - component: {fileID: 1229016874}
   - component: {fileID: 1229016873}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: MirrorReachZone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4564,7 +4568,7 @@ GameObject:
   - component: {fileID: 1479472269}
   - component: {fileID: 1479472271}
   - component: {fileID: 1479472272}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Mirror
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4816,7 +4820,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1530787615}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: mirrorplane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4960,7 +4964,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1609665075}
   - component: {fileID: 1609665074}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Global Volume (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5548,7 +5552,7 @@ GameObject:
   - component: {fileID: 1937556020}
   - component: {fileID: 1937556022}
   - component: {fileID: 1937556021}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Camera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6488,7 +6492,7 @@ GameObject:
   - component: {fileID: 2031048108}
   - component: {fileID: 2031048107}
   - component: {fileID: 2031048106}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: handle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
