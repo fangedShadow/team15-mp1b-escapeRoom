@@ -8,6 +8,7 @@ TagManager:
   - Rope
   - Sword
   - Ground
+  - Collectible
   layers:
   - Default
   - TransparentFX

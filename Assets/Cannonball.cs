@@ -15,15 +15,26 @@ public class Cannonball : MonoBehaviour
         {
             hasHitTarget = true;
 
-            KeyReveal keyReveal = FindFirstObjectByType<KeyReveal>();
+            // Make target disappear
+            collision.gameObject.SetActive(false);
+
+            // Find KeyReveal, including inactive objects
+            KeyReveal keyReveal = FindFirstObjectByType<KeyReveal>(
+                FindObjectsInactive.Include
+            );
 
             if (keyReveal != null)
             {
+                Debug.Log("FOUND KEY REVEAL!");
                 keyReveal.RevealKey();
             }
+            else
+            {
+                Debug.LogError("COULD NOT FIND KEY REVEAL!");
+            }
 
+            // Destroy cannonball
             Destroy(gameObject, destroyDelay);
         }
     }
 }
-

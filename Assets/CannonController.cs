@@ -10,6 +10,9 @@ public class CannonController : MonoBehaviour
     [Header("Interaction")]
     [SerializeField] private float cooldown = 1f;
 
+    [Header("Key")]
+    [SerializeField] private KeyReveal keyReveal;
+
     private float lastFireTime = -Mathf.Infinity;
 
     public void Fire()
