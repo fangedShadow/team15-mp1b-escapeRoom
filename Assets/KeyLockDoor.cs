@@ -32,8 +32,6 @@ public class KeyLockDoor : MonoBehaviour
         if (puzzleHandler != null)
         {
             puzzleHandler.SetPuzzleLevel(levelAfterUnlock);
-            if (levelAfterUnlock >= 4)
-                puzzleHandler.WinGame();
         }
         StartCoroutine(OpenSequence(key));
     }
@@ -84,7 +82,7 @@ public class KeyLockDoor : MonoBehaviour
         }
 
         if (destroyKeyOnUnlock)
-            Destroy(key);
+            Destroy(keyTransform.gameObject);
         else if (keyBody != null)
         {
             keyBody.useGravity = hadGravity;

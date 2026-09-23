@@ -1,12 +1,13 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
+using TMPro;
 
 public class ActionHandler : MonoBehaviour
 {
-    public InputActionReference quitAction, switchViewAction, lightAction, interactAction, spawnShipAction;
+    public InputActionReference quitAction, lightAction, interactAction, spawnShipAction, teleportToWinAction;
 
-    public Transform controller, globe, map, player, roomview, externalview, pointer;
+    public Transform controller, globe, map, player, pointer;
     public float rayDistance = 20f, pointerBobAmount = 0.02f, pointerBobSpeed = 2f, pointerZAmount = 0.02f, shipSpeed = 2f, spawnXMin=-4.6f, spawnXMax=4.6f, spawnY = 0.04f, spawnZMin=-4f, spawnZMax=4f;
     public Vector3 correctShipPoint = new Vector3(-2.5f, 0f, -0.8f);
     public Vector3 keySpawnPosition = new Vector3(-4.5f, 4f, 3.5f);
@@ -14,6 +15,7 @@ public class ActionHandler : MonoBehaviour
     public int puzzleLevel = 1;
     public GameObject key2InBucket;
     public GameObject key2Riddle, key3Riddle;
+    public Material angleViewerMaterial;
     public MeshCollider[] finalFakeWalls;
     public GameObject finalKey;
     public CoinPouch coinPouch;
@@ -23,13 +25,16 @@ public class ActionHandler : MonoBehaviour
     public GameObject winCanvas;
     public GameObject winText;
     public Transform riddleFacingTransform;
-    [Range(0f, 1f)] public float riddleViewAngle = 0.5f;
+    public Transform riddle3FacingTransform;
+    public Collider teleportRoomBounds;
+    public Transform teleportRoomPoint, winRoomPoint;
+    public float teleportRoomRadius = 3f;
     public Light light;
     public Vector3 pointerStartPosition, selectedTargetPoint;
     private GameObject currentHitObject;
-    private bool isExternalView = false, hasSelectedPoint = false;
-    public GameObject lightEffectPrefab, shipPrefab, keyPrefab, pointSelectEffectPrefab, viewChangeEffectPrefab;
-    public AudioSource lightChangeSound, pointSelectSound;
+    private bool hasSelectedPoint = false;
+    public GameObject lightEffectPrefab, shipPrefab, keyPrefab, pointSelectEffectPrefab;
+    public AudioSource lightChangeSound, pointSelectSound, winRoomEntranceSound;
     private LineRenderer debugLine;
     public int maxShips = 5;
     private List<GameObject> activeShips = new List<GameObject>();
@@ -47,10 +52,12 @@ public class ActionHandler : MonoBehaviour
     private Light[] controlledLights;
     public bool key1Spawned;
     private bool gameWon;
+    [Range(0f, 1f)] public float riddleViewAngle = 0.4f;
 
     void Start()
     {
         SetKey2Visible(false);
+        ApplyAngleViewerMaterial();
         if (finalKey != null)
             finalKey.SetActive(false);
         if (winCanvas != null)
@@ -71,39 +78,6 @@ public class ActionHandler : MonoBehaviour
                 #endif
             };
         }
-
-        if (switchViewAction != null)
-        {
-            switchViewAction.action.Enable();
-
-            switchViewAction.action.performed += (ctx) =>
-            {
-                isExternalView = !isExternalView;
-
-                Transform destination =
-                    isExternalView ? externalview : roomview;
-
-                if (player != null && destination != null)
-                {
-                    player.SetPositionAndRotation(
-                        destination.position,
-                        destination.rotation
-                    );
-
-                    if (viewChangeEffectPrefab != null)
-                    {
-                        Instantiate(
-                            viewChangeEffectPrefab,
-                            destination.position,
-                            destination.rotation
-                        );
-                    }
-                }
-
-                
-            };
-        }
-
 
         if (lightAction != null)
         {
@@ -168,6 +142,12 @@ public class ActionHandler : MonoBehaviour
                     SpawnShip(selectedTargetPoint);
             };
         }
+
+        if (teleportToWinAction != null)
+        {
+            teleportToWinAction.action.Enable();
+            teleportToWinAction.action.performed += (ctx) => TryTeleportToWinRoom();
+        }
     }
     void Update()
     {
@@ -190,6 +170,7 @@ public class ActionHandler : MonoBehaviour
         }
 
         DoRaycast();
+        UpdateAngleViewerDirections(); 
         UpdatePuzzleHints();
         UpdateFinalPuzzle();
     }
@@ -281,6 +262,33 @@ public class ActionHandler : MonoBehaviour
             StartCoroutine(DiscoLights());
         }
 
+        void TryTeleportToWinRoom()
+        {
+            if (puzzleLevel < 4 || player == null || winRoomPoint == null || !IsInTeleportRoom())
+                return;
+
+            player.SetPositionAndRotation(winRoomPoint.position, winRoomPoint.rotation);
+            if (winRoomEntranceSound != null)
+            {
+                winRoomEntranceSound.Stop();
+                if (winRoomEntranceSound.clip != null)
+                    winRoomEntranceSound.PlayOneShot(winRoomEntranceSound.clip);
+            }
+            WinGame();
+        }
+
+        bool IsInTeleportRoom()
+        {
+            if (teleportRoomBounds != null)
+                {
+                    Ray standRay = new Ray(player.position + Vector3.up * 0.5f, Vector3.down);
+                    return teleportRoomBounds.Raycast(standRay, out RaycastHit hit, 2f);
+                }
+
+            return teleportRoomPoint != null &&
+                Vector3.Distance(player.position, teleportRoomPoint.position) <= teleportRoomRadius;
+        }
+
     System.Collections.IEnumerator DiscoLights()
         {
             while (gameWon)
@@ -315,9 +323,7 @@ public class ActionHandler : MonoBehaviour
             bool gold = lightColorIndex == 1;
 
             if (key2Riddle != null)
-            {
-                key2Riddle.SetActive(puzzleLevel >= 2 && purple && IsRiddleViewed());
-            }
+                key2Riddle.SetActive(puzzleLevel >= 2 && purple);
 
             if (key3Riddle != null)
                 key3Riddle.SetActive(puzzleLevel == 3 && gold);
@@ -325,33 +331,92 @@ public class ActionHandler : MonoBehaviour
             SetKey2Visible(puzzleLevel >= 2 && purple);
         }
 
-    bool IsRiddleViewed()
+    void ApplyAngleViewerMaterial()
+    {
+        if (angleViewerMaterial == null)
+            return;
+
+        ApplyAngleViewerMaterial(key2Riddle, riddleFacingTransform);
+        ApplyAngleViewerMaterial(key3Riddle, riddle3FacingTransform);
+    }
+
+    void ApplyAngleViewerMaterial(GameObject riddle, Transform facing)
+    {
+        if (riddle == null || angleViewerMaterial == null)
+            return;
+
+        TMP_Text[] textComponents = riddle.GetComponentsInChildren<TMP_Text>(true);
+        foreach (TMP_Text textComponent in textComponents)
         {
-            Transform viewer = Camera.main != null ? Camera.main.transform : player;
-            Transform facing = riddleFacingTransform != null ? riddleFacingTransform : key2Riddle.transform;
+            if (textComponent.fontSharedMaterial == null)
+                continue;
 
-            if (viewer == null || facing == null)
-                return true;
+            // KEY FIX: clone the text's OWN existing material first.
+            // This keeps _MainTex correctly pointing at the real font atlas.
+            Material newMaterial = new Material(textComponent.fontSharedMaterial);
+            newMaterial.shader = angleViewerMaterial.shader; // just swap the shader, texture stays bound
+            if (newMaterial.HasProperty("_Color"))
+                newMaterial.SetColor("_Color", Color.red);
 
-            Vector3 toViewer = (viewer.position - facing.position).normalized;
-            return Mathf.Abs(Vector3.Dot(facing.forward, toViewer)) >= riddleViewAngle;
+            textComponent.fontSharedMaterial = newMaterial;
+            textComponent.fontMaterial = newMaterial;
+            textComponent.material = newMaterial;
+            textComponent.SetMaterialDirty();
+            textComponent.SetVerticesDirty();
         }
+    }
+
+    void UpdateAngleViewerDirections()
+    {
+        UpdateAngleViewerDirection(key2Riddle, riddleFacingTransform);
+        UpdateAngleViewerDirection(key3Riddle, riddle3FacingTransform);
+    }
+
+    void UpdateAngleViewerDirection(GameObject riddle, Transform facing)
+    {
+        if (riddle == null)
+            return;
+
+        TMP_Text[] textComponents = riddle.GetComponentsInChildren<TMP_Text>(true);
+        foreach (TMP_Text textComponent in textComponents)
+        {
+            if (textComponent.fontSharedMaterial != null)
+                SetAngleViewerProperties(textComponent.fontSharedMaterial, facing);
+        }
+    }
+
+    void SetAngleViewerProperties(Material material, Transform facing)
+    {
+        if (material == null)
+            return;
+
+        if (material.HasProperty("_ViewThreshold") && angleViewerMaterial.HasProperty("_ViewThreshold"))
+            material.SetFloat("_ViewThreshold", angleViewerMaterial.GetFloat("_ViewThreshold"));
+
+        Vector3 dir = facing != null ? facing.forward : Vector3.forward;
+        if (dir.sqrMagnitude < 0.0001f)
+            dir = Vector3.forward;
+
+        if (material.HasProperty("_FacingDirectionWS"))
+            material.SetVector("_FacingDirectionWS", dir);
+    }
 
     void SetKey2Visible(bool visible)
-        {
-            if (key2InBucket == null)
-                return;
+    {
+        if (key2InBucket == null)
+            return;
 
-            KeyItem key = key2InBucket.GetComponent<KeyItem>();
-            if (key == null)
-                key = key2InBucket.AddComponent<KeyItem>();
+        KeyItem key = key2InBucket.GetComponent<KeyItem>();
+        if (key == null)
+            key = key2InBucket.AddComponent<KeyItem>();
 
-            if (!key.IsClaimed)
-                key2InBucket.SetActive(visible);
-        }
+        if (!key.IsClaimed)
+            key2InBucket.SetActive(visible);
+    }
 
     Light[] GetControlledLights()
-        {
+    {
+
             if (!synchronizeAllPointLights)
                 return new[] { light };
 

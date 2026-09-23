@@ -7,8 +7,10 @@
 [Ll]ogs/
 [Uu]ser[Ss]ettings/
 
-AndroidBuild/
-
+AndriodBuild/
+AndriodBuild/bs72-theRoom-Andriod_BackUpThisFolder_ButDontShipItWithYourGame/
+AndriodBuild/bs72-theRoom-Andriod_BackUpThisFolder_ButDontShipItWithYourGame/il2cppOutput/
+AndriodBuild/bs72-theRoom-Andriod_BackUpThisFolder_ButDontShipItWithYourGame/Managed/
 # Memory captures
 [Mm]emoryCaptures/
 
