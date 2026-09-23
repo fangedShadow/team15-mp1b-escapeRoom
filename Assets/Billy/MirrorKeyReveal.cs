@@ -5,6 +5,7 @@ public class MirrorKeyReveal : MonoBehaviour
 {
     public GameObject mirrorKeyVisual;
     public Renderer realKeyRenderer;
+    public bool hasBeenTaken = false;
 
     private UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable grab;
     private Rigidbody rb;
@@ -29,6 +30,7 @@ public class MirrorKeyReveal : MonoBehaviour
     private void OnGrabbed(SelectEnterEventArgs args)
     {
         Debug.Log("RealKey grabbed from mirror");
+        hasBeenTaken = true;
 
         if (realKeyRenderer != null)
             realKeyRenderer.enabled = true;
