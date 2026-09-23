@@ -5,6 +5,7 @@ public class MirrorReachZone : MonoBehaviour
 {
     public Transform mirrorPlane;
     public UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable realKeyGrab;
+    public UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable handMirrorGrab;
 
     private bool enteredFromFront = false;
     private bool keyTaken = false;
@@ -20,8 +21,6 @@ public class MirrorReachZone : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Mirror zone entered by: " + other.name);
-
         if (!other.CompareTag("PlayerHand"))
             return;
 
@@ -48,10 +47,13 @@ public class MirrorReachZone : MonoBehaviour
 
         if (side < 0f)
         {
-            Debug.Log("Hand crossed through mirror");
+            if (handMirrorGrab != null)
+                handMirrorGrab.enabled = false;
 
             if (realKeyGrab != null)
                 realKeyGrab.enabled = true;
+
+            Debug.Log("Hand crossed through mirror");
         }
     }
 
@@ -62,10 +64,14 @@ public class MirrorReachZone : MonoBehaviour
 
         enteredFromFront = false;
 
-        // Player reached through but did NOT take the key.
-        if (!keyTaken && realKeyGrab != null)
+        if (!keyTaken)
         {
-            realKeyGrab.enabled = false;
+            if (realKeyGrab != null)
+                realKeyGrab.enabled = false;
+
+            if (handMirrorGrab != null)
+                handMirrorGrab.enabled = true;
+
             Debug.Log("Hand left mirror without key");
         }
     }
@@ -73,6 +79,10 @@ public class MirrorReachZone : MonoBehaviour
     private void OnKeyGrabbed(SelectEnterEventArgs args)
     {
         keyTaken = true;
+
+        if (handMirrorGrab != null)
+            handMirrorGrab.enabled = true;
+
         Debug.Log("Key successfully taken from mirror");
     }
 }
