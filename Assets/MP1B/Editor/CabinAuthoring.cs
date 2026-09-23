@@ -87,9 +87,9 @@ namespace BlackTide.MP1B.Editor
             existingStatus.parent.gameObject.SetActive(false);
             PlayerSettings.productName = "mp1b";
             PlayerSettings.SetApplicationIdentifier(NamedBuildTarget.Android, "edu.illinois.mp1.blacktide.mp1b");
-            // Desktop debugging does not initialize a VR runtime; Android retains the existing OpenXR loader.
+            // Allow a linked headset in Play Mode; desktop controls still work when no XR display is running.
             var xr = UnityEditor.XR.Management.XRGeneralSettingsPerBuildTarget.XRGeneralSettingsForBuildTarget(BuildTargetGroup.Standalone);
-            if (xr) { xr.InitManagerOnStart = false; EditorUtility.SetDirty(xr); }
+            if (xr) { xr.InitManagerOnStart = true; EditorUtility.SetDirty(xr); }
             Persist(root.gameObject);
             Persist(old.player.gameObject);
             EditorSceneManager.SaveScene(SceneManager.GetActiveScene(), CabinPath);
@@ -485,12 +485,7 @@ namespace BlackTide.MP1B.Editor
                 var volume=directObject.AddComponent<SphereCollider>();volume.radius=.095f;volume.isTrigger=true;
                 var body=directObject.AddComponent<Rigidbody>();body.isKinematic=true;body.useGravity=false;
                 var direct=directObject.AddComponent<XRDirectInteractor>();
-                direct.selectInput=new XRInputButtonReader("Grip","Grip value",false,XRInputButtonReader.InputSourceMode.InputAction)
-                {
-                    inputActionPerformed=new InputAction("Grip",InputActionType.Button,"<XRController>{"+side+"Hand}/gripPressed"),
-                    inputActionValue=new InputAction("Grip value",InputActionType.Value,"<XRController>{"+side+"Hand}/grip")
-                };
-                direct.selectActionTrigger=XRBaseInputInteractor.InputTriggerType.StateChange;
+                CabinXRSetup.ConfigureGrip(direct, side);
             }
         }
 

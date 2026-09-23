@@ -12,6 +12,22 @@ Open the repository root in Unity Hub with Unity `6000.5.6f1`. Double-click `Ass
 
 This contribution covers the captain's room, its completion state, and reusable scene transitions. The transition cabin is an independent integration sample. The final team challenge, global victory, and full-team testing remain separate responsibilities.
 
+## Meta headset connected to a PC
+
+Start Quest Link / Air Link in the headset before running the scene. In the Meta Link desktop application, select Meta Link as the active OpenXR runtime, then restart Unity if the runtime changed. Use the Windows build target for a PC executable; an Android build produces a headset APK.
+
+The project enables Oculus Touch, Touch Plus, and Touch Pro interaction profiles for PC and Android. `MP1b > Configure Meta controller input` reapplies the saved configuration when importing these assets into another project.
+
+- Left thumbstick: walk and strafe.
+- Right thumbstick left/right: turn in 30-degree steps; release to center before the next turn.
+- Look around by turning your head.
+- Trigger: point at a puzzle button to press it.
+- Grip: hold a nearby item; release to drop it.
+
+If tracking works but controls do not, hold a thumbstick and press F8 on the PC keyboard. Copy the `[Captain VR input]` Console entry: it includes XR mode, device layouts, raw stick values, and action values. Alternatively, use the PiratePlayer component context menu `Log VR controller input on next game frame`. The diagnostic reads gameplay input on a game frame, rather than the separate editor input buffer. Offline injected-controller checks do not certify the physical headset/runtime connection.
+
+Meta Link setup reference: https://developers.meta.com/horizon/documentation/unity/unity-link/
+
 ## Connect a door
 
 1. Include the source and destination gameplay scenes in the build's scene list.

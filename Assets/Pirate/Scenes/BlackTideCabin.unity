@@ -91643,45 +91643,29 @@ MonoBehaviour:
   m_StartingHoverFilters: []
   m_StartingSelectFilters: []
   m_SelectInput:
-    m_InputSourceMode: 1
+    m_InputSourceMode: 2
     m_InputActionPerformed:
       m_Name: Grip
       m_Type: 1
       m_ExpectedControlType: 
-      m_Id: 530ffa72-44aa-434c-8a15-3dc05888cd20
+      m_Id: f8441240-fa39-40ca-9a83-2516bfea8915
       m_Processors: 
       m_Interactions: 
-      m_SingletonActionBindings:
-      - m_Name: 
-        m_Id: 80e8afe6-8ffb-41c2-8b50-e5f91125d5da
-        m_Path: <XRController>{LeftHand}/gripPressed
-        m_Interactions: 
-        m_Processors: 
-        m_Groups: 
-        m_Action: Grip
-        m_Flags: 0
+      m_SingletonActionBindings: []
       m_Flags: 0
       m_Priority: 0
     m_InputActionValue:
       m_Name: Grip value
       m_Type: 0
-      m_ExpectedControlType: 
-      m_Id: b279ad89-df60-4500-ad06-921c1a1af68c
+      m_ExpectedControlType: Axis
+      m_Id: b754156c-14c2-4462-a7fa-503fafc4d5e8
       m_Processors: 
       m_Interactions: 
-      m_SingletonActionBindings:
-      - m_Name: 
-        m_Id: b2f8f41a-c81a-40a9-92d2-35a0629ecd49
-        m_Path: <XRController>{LeftHand}/grip
-        m_Interactions: 
-        m_Processors: 
-        m_Groups: 
-        m_Action: Grip value
-        m_Flags: 0
+      m_SingletonActionBindings: []
       m_Flags: 0
       m_Priority: 0
-    m_InputActionReferencePerformed: {fileID: 0}
-    m_InputActionReferenceValue: {fileID: 0}
+    m_InputActionReferencePerformed: {fileID: 11400000, guid: bca532f7ab603d24280462bd7476223b, type: 2}
+    m_InputActionReferenceValue: {fileID: 11400000, guid: 4d5f656b0557d364680742a6253409b1, type: 2}
     m_ObjectReferenceObject: {fileID: 0}
     m_ManualPerformed: 0
     m_ManualValue: 0
@@ -106326,45 +106310,29 @@ MonoBehaviour:
   m_StartingHoverFilters: []
   m_StartingSelectFilters: []
   m_SelectInput:
-    m_InputSourceMode: 1
+    m_InputSourceMode: 2
     m_InputActionPerformed:
       m_Name: Grip
       m_Type: 1
       m_ExpectedControlType: 
-      m_Id: 90d3083d-87e8-474b-874e-65713865843c
+      m_Id: 424f816a-59ce-4ade-b69c-1cfd9b7eb1e3
       m_Processors: 
       m_Interactions: 
-      m_SingletonActionBindings:
-      - m_Name: 
-        m_Id: ff3f02c2-457e-4abb-b190-07eb9d6de455
-        m_Path: <XRController>{RightHand}/gripPressed
-        m_Interactions: 
-        m_Processors: 
-        m_Groups: 
-        m_Action: Grip
-        m_Flags: 0
+      m_SingletonActionBindings: []
       m_Flags: 0
       m_Priority: 0
     m_InputActionValue:
       m_Name: Grip value
       m_Type: 0
-      m_ExpectedControlType: 
-      m_Id: 3e0840c6-3b64-4fe6-873a-48ad7ae9e39f
+      m_ExpectedControlType: Axis
+      m_Id: 0c3d0ba4-1dcc-44f3-9d16-e49a6939b679
       m_Processors: 
       m_Interactions: 
-      m_SingletonActionBindings:
-      - m_Name: 
-        m_Id: b17312c7-2ae5-4549-ba1d-f279060d1159
-        m_Path: <XRController>{RightHand}/grip
-        m_Interactions: 
-        m_Processors: 
-        m_Groups: 
-        m_Action: Grip value
-        m_Flags: 0
+      m_SingletonActionBindings: []
       m_Flags: 0
       m_Priority: 0
-    m_InputActionReferencePerformed: {fileID: 0}
-    m_InputActionReferenceValue: {fileID: 0}
+    m_InputActionReferencePerformed: {fileID: 11400000, guid: d1ca56c93b7309e4e9ce1513ab450986, type: 2}
+    m_InputActionReferenceValue: {fileID: 11400000, guid: 2d6b998612badcb48b92171f528954b0, type: 2}
     m_ObjectReferenceObject: {fileID: 0}
     m_ManualPerformed: 0
     m_ManualValue: 0

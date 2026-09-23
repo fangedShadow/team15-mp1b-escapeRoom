@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
@@ -36,11 +37,19 @@ namespace BlackTide
         float pitch;
         bool turnLatched;
         bool modeSet;
+        bool diagnosticRequested;
+
+        void OnEnable()
+        {
+            // Start only runs once; the cached rig can be enabled again during scene travel.
+            if (inputs) inputs.Enable();
+        }
 
         void Start()
         {
             inputs.Enable();
             RefreshMode();
+            Invoke(nameof(PrintXRInputReport), 3f);
         }
         void RefreshMode()
         {
@@ -116,10 +125,40 @@ namespace BlackTide
         void Update()
         {
             if (Time.unscaledTime >= refreshAt) { refreshAt = Time.unscaledTime + .5f; RefreshMode(); }
+            if (diagnosticRequested || (Keyboard.current != null && Keyboard.current.f8Key.wasPressedThisFrame))
+            { diagnosticRequested = false; PrintXRInputReport(); }
             if (BlackTide.MP1B.CabinTransition.IsTravelling) return;
             Move();
             if (IsXR) SnapTurn();
             else DesktopLookAndInteract();
+        }
+
+        [ContextMenu("Log VR controller input on next game frame")]
+        public void RequestXRInputReport() => diagnosticRequested = true;
+
+        void PrintXRInputReport()
+        {
+            var text = new StringBuilder("[Captain VR input] ");
+            text.AppendLine($"version=meta-input-1 XR={IsXR} simulated={IsSimulatedXR} appFocused={Application.isFocused} playerEnabled={isActiveAndEnabled} travelling={BlackTide.MP1B.CabinTransition.IsTravelling}");
+            text.AppendLine($"background={InputSystem.settings.backgroundBehavior}");
+            foreach (var device in InputSystem.devices)
+            {
+                if (!(device is UnityEngine.InputSystem.XR.XRController)) continue;
+                text.Append($"{device.layout} usages={string.Join(",", device.usages)} enabled={device.enabled}");
+                foreach (var name in new[] { "thumbstick", "primary2DAxis", "triggerPressed", "gripPressed" })
+                {
+                    var control = device.TryGetChildControl(name);
+                    if (control != null) text.Append($" {name}={control.ReadValueAsObject()}");
+                }
+                text.AppendLine();
+            }
+            if (inputs)
+                foreach (var name in new[] { "Gameplay/Move", "Gameplay/Turn", "Left/Select", "Right/Select", "Left/Grip", "Right/Grip" })
+                {
+                    var action = inputs.FindAction(name);
+                    text.AppendLine(action == null ? name + " MISSING" : $"{name} enabled={action.enabled} controls={action.controls.Count} value={action.ReadValueAsObject() ?? "neutral"}");
+                }
+            Debug.Log(text.ToString(), this);
         }
         void Move()
         {
