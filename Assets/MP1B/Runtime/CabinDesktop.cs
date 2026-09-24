@@ -100,6 +100,7 @@ namespace BlackTide.MP1B
         // Called by PiratePlayer immediately after its mouse-look code. No duplicate Update input.
         public void Tick()
         {
+            if (Team15.TeamSession.GameplayBlocked) return;
             if (!player || player.IsXR || !player.view || CabinTransition.IsTravelling) return;
             var mouse = Mouse.current;
             var keyboard = Keyboard.current;
@@ -409,6 +410,7 @@ namespace BlackTide.MP1B
 
         void OnGUI()
         {
+            if (Team15.TeamSession.GameplayBlocked) return;
             if (!player || player.IsXR || CabinTransition.IsTravelling) return;
             if (hintStyle == null)
             {

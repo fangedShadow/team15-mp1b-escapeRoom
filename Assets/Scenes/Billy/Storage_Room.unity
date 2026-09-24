@@ -296,7 +296,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.2, y: 0.04, z: 0.03}
+  m_Size: {x: 0.3, y: 0.1, z: 0.08}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &106614775
 MonoBehaviour:
@@ -1070,6 +1070,7 @@ MonoBehaviour:
   isLit: 0
   matchFlame: {fileID: 544393297}
   matchLight: {fileID: 2050198774}
+  storageBox: {fileID: 1253145923}
 --- !u!114 &289816707
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1790,6 +1791,7 @@ MonoBehaviour:
   isLit: 0
   matchFlame: {fileID: 1450103778}
   matchLight: {fileID: 1972361115}
+  storageBox: {fileID: 1253145923}
 --- !u!1 &513712156
 GameObject:
   m_ObjectHideFlags: 0
@@ -1827,6 +1829,7 @@ MonoBehaviour:
   isLit: 0
   matchFlame: {fileID: 1303577462}
   matchLight: {fileID: 740212915}
+  storageBox: {fileID: 1253145923}
 --- !u!114 &513712158
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3481,7 +3484,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.2, y: 0.04, z: 0.03}
+  m_Size: {x: 0.3, y: 0.1, z: 0.08}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &819771905
 MonoBehaviour:
@@ -6258,7 +6261,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.18, y: 0.2, z: 0.18538922}
+  m_Size: {x: 0.32, y: 0.3, z: 0.32}
   m_Center: {x: 0, y: 4.181574e-17, z: 0.007508997}
 --- !u!1 &1913898203 stripped
 GameObject:

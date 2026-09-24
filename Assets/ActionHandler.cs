@@ -140,6 +140,7 @@ public class ActionHandler : MonoBehaviour
 
     void Update()
     {
+        if (Team15.TeamSession.GameplayBlocked) return;
         activeShips.RemoveAll(ship => ship == null);
         if (globe != null) globe.Rotate(Vector3.up, 20f * Time.deltaTime);
         if (pointer != null)
@@ -156,6 +157,7 @@ public class ActionHandler : MonoBehaviour
 
     public void ChangeLightColor()
     {
+        if (Team15.TeamSession.GameplayBlocked) return;
         if (!isActiveAndEnabled || light == null || gameWon || Time.unscaledTime - lastLightInputTime < lightInputCooldown)
             return;
         lastLightInputTime = Time.unscaledTime;
@@ -222,6 +224,7 @@ public class ActionHandler : MonoBehaviour
 
     public void WinGame()
     {
+        if (Team15.TeamSession.GameplayBlocked) return;
         if (gameWon || !isActiveAndEnabled || !CanWin()) return;
         gameWon = true;
         if (winObjects != null)
@@ -237,6 +240,7 @@ public class ActionHandler : MonoBehaviour
 
     public void TryTeleportToWinRoom()
     {
+        if (Team15.TeamSession.GameplayBlocked) return;
         if (gameWon || !isActiveAndEnabled || !CanWin() || player == null || winRoomPoint == null || !IsInTeleportRoom())
             return;
         CharacterController body = player.GetComponent<CharacterController>();
@@ -256,9 +260,18 @@ public class ActionHandler : MonoBehaviour
     public bool IsInTeleportRoom()
     {
         if (player == null) return false;
+        // Room-scale walking moves the tracked head without moving the rig origin.
+        // Test the player's actual floor footprint, retaining the rig's floor height.
+        Camera camera = viewCamera != null ? viewCamera : player.GetComponentInChildren<Camera>();
+        Vector3 floorPosition = player.position;
+        if (camera != null)
+        {
+            floorPosition.x = camera.transform.position.x;
+            floorPosition.z = camera.transform.position.z;
+        }
         if (teleportRoomBounds != null)
-            return teleportRoomBounds.Raycast(new Ray(player.position + Vector3.up * 0.5f, Vector3.down), out _, 2f);
-        return teleportRoomPoint != null && Vector3.Distance(player.position, teleportRoomPoint.position) <= RoomDistance(teleportRoomRadius);
+            return teleportRoomBounds.Raycast(new Ray(floorPosition + Vector3.up * 0.5f, Vector3.down), out _, 2f);
+        return teleportRoomPoint != null && Vector3.Distance(floorPosition, teleportRoomPoint.position) <= RoomDistance(teleportRoomRadius);
     }
 
     System.Collections.IEnumerator DiscoLights()
@@ -378,6 +391,7 @@ public class ActionHandler : MonoBehaviour
 
     public void SpawnSelectedShip()
     {
+        if (Team15.TeamSession.GameplayBlocked) return;
         if (!isActiveAndEnabled || !hasSelectedPoint || map == null) return;
         activeShips.RemoveAll(ship => ship == null);
         if (activeShips.Count >= maxShips || shipPrefab == null) return;
@@ -430,6 +444,7 @@ public class ActionHandler : MonoBehaviour
 
     public void InteractWithTarget()
     {
+        if (Team15.TeamSession.GameplayBlocked) return;
         if (!isActiveAndEnabled) return;
         DoRaycast();
         if (currentHitObject == null) return;

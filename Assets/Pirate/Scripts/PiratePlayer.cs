@@ -127,6 +127,7 @@ namespace BlackTide
             if (Time.unscaledTime >= refreshAt) { refreshAt = Time.unscaledTime + .5f; RefreshMode(); }
             if (diagnosticRequested || (Keyboard.current != null && Keyboard.current.f8Key.wasPressedThisFrame))
             { diagnosticRequested = false; PrintXRInputReport(); }
+            if (Team15.TeamSession.GameplayBlocked) return;
             if (BlackTide.MP1B.CabinTransition.IsTravelling) return;
             Move();
             if (IsXR) SnapTurn();
@@ -228,6 +229,7 @@ namespace BlackTide
         }
         void OnGUI()
         {
+            if (Team15.TeamSession.GameplayBlocked) return;
             if (IsXR) return;
             GUI.color = desktopHover ? new Color(1f, .8f, .25f) : Color.white;
             GUI.Label(new Rect(Screen.width * .5f - 4f, Screen.height * .5f - 9f, 20f, 20f), "+");

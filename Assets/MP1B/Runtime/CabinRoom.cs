@@ -130,6 +130,7 @@ namespace BlackTide.MP1B
 
         void Update()
         {
+            if (Team15.TeamSession.GameplayBlocked) return;
             var keyboard = Keyboard.current;
             if (keyboard != null)
             {

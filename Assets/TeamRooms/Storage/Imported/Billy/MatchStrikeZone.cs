@@ -1,48 +1,39 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Team15.Storage
 {
-public class MatchStrikeZone : MonoBehaviour
-{
-    public float minimumStrikeDistance = 0.08f;
-
-    private MatchKey currentMatch;
-    private Vector3 entryPosition;
-
-    private void OnTriggerEnter(Collider other)
+    public class MatchStrikeZone : MonoBehaviour
     {
-        MatchKey match = other.GetComponentInParent<MatchKey>();
+        public float minimumStrikeDistance = 0.08f;
+        readonly Dictionary<Collider, Vector3> entries = new Dictionary<Collider, Vector3>();
 
-        if (match == null || match.isLit)
-            return;
-
-        currentMatch = match;
-        entryPosition = match.transform.position;
-    }
-
-    private void OnTriggerStay(Collider other)
-    {
-        MatchKey match = other.GetComponentInParent<MatchKey>();
-
-        if (match == null || match != currentMatch || match.isLit)
-            return;
-
-        float distanceMoved =
-            Vector3.Distance(entryPosition, match.transform.position);
-
-        if (distanceMoved >= minimumStrikeDistance)
+        void OnTriggerEnter(Collider other)
         {
-            match.LightMatch();
-            currentMatch = null;
+            var match = other.GetComponentInParent<MatchKey>();
+            if (match && match.CanStrike)
+                entries[other] = transform.InverseTransformPoint(match.transform.position);
         }
-    }
 
-    private void OnTriggerExit(Collider other)
-    {
-        MatchKey match = other.GetComponentInParent<MatchKey>();
+        void OnTriggerStay(Collider other)
+        {
+            var match = other.GetComponentInParent<MatchKey>();
+            if (!match || !match.CanStrike)
+            {
+                entries.Remove(other);
+                return;
+            }
+            if (!entries.TryGetValue(other, out var entry)) return;
 
-        if (match == currentMatch)
-            currentMatch = null;
+            // Measure travel against the striker, not against the room: moving
+            // the whole box together with a match must not count as a swipe.
+            Vector3 movement = transform.InverseTransformPoint(match.transform.position) - entry;
+            if (transform.TransformVector(movement).magnitude < minimumStrikeDistance) return;
+            match.LightMatch();
+            entries.Remove(other);
+        }
+
+        void OnTriggerExit(Collider other) => entries.Remove(other);
+        void OnDisable() => entries.Clear();
     }
-}
 }

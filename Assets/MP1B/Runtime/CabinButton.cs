@@ -68,6 +68,7 @@ namespace BlackTide.MP1B
 
         public void Press()
         {
+            if (Team15.TeamSession.GameplayBlocked) return;
             if (!isActiveAndEnabled || Time.unscaledTime - _lastPress < 0.18f) return;
             bool bellInput = operation == CabinButtonOperation.PuzzleInput && puzzle && puzzle.kind == CabinPuzzleKind.Bell;
             if (bellInput && puzzle.IsReplaying) return;
@@ -110,12 +111,12 @@ namespace BlackTide.MP1B
 
         IEnumerator PressMotion(Color feedbackColor)
         {
-            for (float t = 0f; t < 0.09f; t += Time.unscaledDeltaTime)
+            for (float t = 0f; t < 0.09f; t += Time.deltaTime)
             {
                 ApplyVisual(Mathf.SmoothStep(0f, 1f, t / 0.09f), feedbackColor);
                 yield return null;
             }
-            for (float t = 0f; t < 0.16f; t += Time.unscaledDeltaTime)
+            for (float t = 0f; t < 0.16f; t += Time.deltaTime)
             {
                 ApplyVisual(_selected ? 1f : 1f - Mathf.SmoothStep(0f, 1f, t / 0.16f), _selected ? selectedColor : feedbackColor);
                 yield return null;

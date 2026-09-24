@@ -1,109 +1,42 @@
-# Unity generated folders
-[Ll]ibrary/
-[Tt]emp/
-[Oo]bj/
-[Bb]uild/
-[Bb]uilds/
-[Ll]ogs/
-[Uu]ser[Ss]ettings/
+/*
+!/.gitignore
+!/.gitattributes
+!/Assets/
+!/Packages/
+!/ProjectSettings/
+!/LICENSE*
+!/COPYING*
+!/NOTICE*
 
-AndroidBuild/
-
-# Memory captures
-[Mm]emoryCaptures/
-
-# Asset metadata backups
-*.pidb.meta
-*.pdb.meta
-*.mdb.meta
-
-# Unity crash reports
-sysinfo.txt
-
-# Visual Studio / VS Code
-.vs/
-.vscode/
-*.csproj
-*.sln
-*.suo
-*.user
-*.userprefs
-
-# Rider
-.idea/
-
-# OS generated files
 .DS_Store
 Thumbs.db
+Desktop.ini
+*~
 
-# Build artifacts
-*.apk
-*.aab
-*.unitypackage
-
-# Gradle
-.gradle/
-# Captain cabin local files
-[Ll]ibrary/
-[Tt]emp/
-[Oo]bj/
-[Bb]uild/
-[Bb]uilds/
-[Ll]ogs/
-[Uu]ser[Ss]ettings/
-MemoryCaptures/
-Recordings/
-Screenshots/
-.vs/
-.idea/
-*.csproj
-*.sln
-*.suo
-*.user
-*.userprefs
-*.pidb
-*.booproj
-*.svd
-*.pdb
-*.mdb
-*.opendb
-*.VC.db
-.DS_Store
-
-/.utmp/
-/Backups/
-/Verification/
-/*.log
-
+/Assets/_Recovery/
+/Assets/_Recovery.meta
+/Assets/TutorialInfo/
+/Assets/TutorialInfo.meta
+/Assets/Readme.asset
+/Assets/Readme.asset.meta
+/Assets/Scenes/SampleScene.unity
+/Assets/Scenes/SampleScene.unity.meta
 /Assets/MP1B/Original/
 /Assets/MP1B/Original.meta
-
-/README.md
-/Documentation/Implementation_Status.md
-/Documentation/MP1b_Demo_Script.md
-/Documentation/MP1b_Rubric_Evidence.md
-/Documentation/开始试玩.md
 
 /Assets/MP1B/Editor/CabinVerification.cs
 /Assets/MP1B/Editor/CabinVerification.cs.meta
 /Assets/MP1B/Editor/CabinBellUpdate.cs
 /Assets/MP1B/Editor/CabinBellUpdate.cs.meta
-
-# Local integration outputs
-/.utmp/
-/AndriodBuild/
-/Verification/
-/Logs/
-/Builds/
-/mono_crash*
-/*.slnx
-
 /Assets/TeamGame/Editor/CombinedVerification.cs
 /Assets/TeamGame/Editor/CombinedVerification.cs.meta
+/Assets/TeamGame/Editor/VrFinalInputChecks.cs
+/Assets/TeamGame/Editor/VrFinalInputChecks.cs.meta
+/Assets/TeamGame/Editor/VrMetaProfileChecks.cs
+/Assets/TeamGame/Editor/VrMetaProfileChecks.cs.meta
+/Assets/TeamGame/Editor/VrShaderChecks.cs
+/Assets/TeamGame/Editor/VrShaderChecks.cs.meta
 
-/.vsconfig
-
-# One-off local asset repair utilities
 /Assets/TeamRooms/Storage/Editor/
 /Assets/TeamRooms/Storage/Editor.meta
 /Assets/AureDevGames/Water Stylized Shader Orto & Perspective Camera/Editor/

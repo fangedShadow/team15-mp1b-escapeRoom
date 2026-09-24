@@ -35,7 +35,9 @@ namespace Team15.Storage
             if (enteredFromFront.Contains(other) && Side(other) < 0f)
             {
                 crossedHands.Add(other);
-                if (handMirrorGrab != null) handMirrorGrab.enabled = false;
+                // A second hand reaching through must not release the hand holding the mirror.
+                // A resting mirror is disabled temporarily so desktop reach selects the key.
+                if (handMirrorGrab != null && !handMirrorGrab.isSelected) handMirrorGrab.enabled = false;
                 if (realKeyGrab != null) realKeyGrab.enabled = true;
             }
         }

@@ -25,6 +25,7 @@ namespace Team15
         public ActionHandler navigation;
         public TMP_Text exitLabel;
         public Transform captainDoor;
+        public GameObject captainPortal;
         public Collider[] captainDoorColliders;
         public bool IsComplete { get; private set; }
         float nextCheck;
@@ -48,6 +49,7 @@ namespace Team15
         public void BindPlayer(PiratePlayer rig)
         {
             player = rig;
+            rig.body.slopeLimit = roomIndex == 0 ? 60f : 45f;
             rig.interiorAnchor = spawn.transform;
             rig.exteriorAnchor = spawn.transform;
             rig.view.cullingMask = roomIndex == 1 ? ~(1 << 9) : ~0;
@@ -83,6 +85,7 @@ namespace Team15
         }
         void Update()
         {
+            if (Team15.TeamSession.GameplayBlocked) return;
             if (!player || SceneManager.GetActiveScene() != gameObject.scene || CabinTransition.IsTravelling) return;
             if (navigation)
             {
@@ -106,6 +109,7 @@ namespace Team15
             if (TeamSession.Instance) TeamSession.Instance.RecordCompletion(roomIndex, IsComplete);
             if (captainDoorColliders != null)
                 foreach (var collider in captainDoorColliders) if (collider) collider.enabled = !IsComplete;
+            if (captainPortal && captainPortal.activeSelf != IsComplete) captainPortal.SetActive(IsComplete);
             if (exitLabel)
             {
                 exitLabel.text = IsComplete ? "<b>EXIT UNLOCKED</b>\nWalk through to " + TeamSession.Names[Mathf.Min(3, roomIndex + 1)]
@@ -116,6 +120,7 @@ namespace Team15
         void OnDestroy() { light?.Dispose(); ship?.Dispose(); select?.Dispose(); celebrate?.Dispose(); }
         void OnGUI()
         {
+            if (Team15.TeamSession.GameplayBlocked) return;
             if (!navigation || !player || player.IsXR || SceneManager.GetActiveScene() != gameObject.scene) return;
             GUI.Box(new Rect(12, 180, 360, 58), "Navigation: aim + E/click selects map\nF launch ship  |  L light  |  T enter celebration");
         }
