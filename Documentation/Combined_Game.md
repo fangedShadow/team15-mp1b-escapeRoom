@@ -1,6 +1,6 @@
 # The Black Tide — Team 15
 
-Open the project root with **Unity 6000.5.6f1**. Start Play Mode from `Assets/Scenes/DeckScene.unity`.
+Open the project root with **Unity 6000.5.6f1**. Choose **Team 15 → Open game start**, or open `Assets/Scenes/DeckScene.unity`, then start Play Mode.
 
 The route is **Deck → Storage Room → Captain's Cabin → Navigation Room**. Finish each room's required puzzles and unlock its exit, then walk through the doorway. Extra Captain ruby collectibles do not block progress. Navigation retains its final challenge and celebration area.
 
@@ -32,6 +32,8 @@ The four gameplay scenes are already enabled in order. `TransitionCabin` is an o
 - **Team 15 → Build Quest game** produces `Builds/Quest/BlackTideTeam15.apk`.
 
 The integration branch is `codex/combined-game`. Source branches were preserved. Local builds and verification outputs are excluded from Git.
+
+Windows and Quest ARM64/IL2CPP builds succeeded on September 23, 2026. The Windows executable passed a desktop startup check. To copy the Windows build to another PC, copy the whole `Builds/Desktop` folder together; the Quest install file is the APK alone.
 
 ## Validation
 

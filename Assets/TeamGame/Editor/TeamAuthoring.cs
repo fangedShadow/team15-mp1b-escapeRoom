@@ -353,6 +353,8 @@ namespace Team15.Editor
         }
         [MenuItem("Team 15/Build Windows game")]
         public static void BuildWindows() => Build(BuildTarget.StandaloneWindows64,"Builds/Desktop/BlackTideTeam15.exe");
+        [MenuItem("Team 15/Open game start")]
+        public static void OpenGameStart() => EditorSceneManager.OpenScene(Paths[0]);
         [MenuItem("Team 15/Build Quest game")]
         public static void BuildQuest() => Build(BuildTarget.Android,"Builds/Quest/BlackTideTeam15.apk");
         static void Build(BuildTarget target,string output)
