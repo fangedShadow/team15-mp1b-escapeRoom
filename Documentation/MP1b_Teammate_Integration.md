@@ -1,5 +1,7 @@
 # MP1b — Captain's Cabin integration
 
+> Historical reference for the Captain contribution. The current four-room game, starting scene and controls are described in [Combined_Game.md](Combined_Game.md).
+
 Open the repository root in Unity Hub with Unity `6000.5.6f1`. Double-click `Assets/Pirate/Scenes/BlackTideCabin.unity` and press Play. The transition sample is `Assets/MP1B/Scenes/TransitionCabin.unity`. Keyboard/mouse: WASD to move, hold right mouse to look, E or left click to interact, G to drop. Other rooms and the final team challenge still need gameplay integration.
 
 ## Project and scope

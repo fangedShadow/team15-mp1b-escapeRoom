@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Inputs;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
+using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
 namespace BlackTide.MP1B
 {
@@ -15,11 +16,17 @@ namespace BlackTide.MP1B
         public string targetScene = "TransitionCabin";
         public string targetSpawn = "FromCaptain";
         public bool requireCabinClear = true;
+        // Null keeps standalone cabin behavior; a combined game can guard every legacy door.
+        public static System.Func<CabinTransition, bool> TravelAllowed { get; set; }
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        static void ResetTravelGate() => TravelAllowed = null;
+
         public static bool IsTravelling => CabinTravelRuntime.Current && CabinTravelRuntime.Current.Travelling;
 
         public void Travel()
         {
-            if (IsTravelling) return;
+            if (IsTravelling || (TravelAllowed != null && !TravelAllowed(this))) return;
             if (requireCabinClear && (!CabinRoom.Instance || !CabinRoom.Instance.IsCleared))
             {
                 if (CabinRoom.Instance) CabinRoom.Instance.ShowMessage("The captain's gold key unlocks this door.");
@@ -56,10 +63,12 @@ namespace BlackTide.MP1B
         readonly Dictionary<Scene, CachedRoom> rooms = new Dictionary<Scene, CachedRoom>();
         readonly List<GameObject> carried = new List<GameObject>();
         readonly HashSet<GameObject> exported = new HashSet<GameObject>();
+        readonly HashSet<GameObject> sessionRoots = new HashSet<GameObject>();
         PiratePlayer player;
         XRInteractionManager interactionManager;
         Canvas fadeCanvas;
         Image fadeImage;
+        bool shuttingDown;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         static void ClearStatic() => Current = null;
@@ -90,10 +99,15 @@ namespace BlackTide.MP1B
                 if (manager.gameObject.scene == source)
                 {
                     if (!interactionManager) interactionManager = manager;
+                    if (manager.gameObject != player.gameObject) sessionRoots.Add(manager.gameObject);
                     Persist(manager.gameObject);
                 }
             foreach (var input in Object.FindObjectsByType<InputActionManager>(FindObjectsSortMode.None))
-                if (input.gameObject.scene == source) Persist(input.gameObject);
+                if (input.gameObject.scene == source)
+                {
+                    if (input.gameObject != player.gameObject) sessionRoots.Add(input.gameObject);
+                    Persist(input.gameObject);
+                }
         }
 
         void BuildFade()
@@ -120,9 +134,52 @@ namespace BlackTide.MP1B
 
         public void Begin(string sceneName, string spawnId)
         {
-            if (Travelling) return;
+            if (Travelling || shuttingDown) return;
             Travelling = true;
             StartCoroutine(TravelRoutine(sceneName, spawnId));
+        }
+
+        /// <summary>Ends this session before the caller destroys its player and loads a fresh first room.</summary>
+        public void ShutdownForRestart()
+        {
+            if (shuttingDown) return;
+            shuttingDown = true;
+            StopAllCoroutines();
+            Travelling = false;
+            // Clear before release callbacks, so no old session can export objects into the new game.
+            if (Current == this) Current = null;
+            CabinTransition.TravelAllowed = null;
+            var oldExports = new HashSet<GameObject>(exported);
+            if (player)
+            {
+                var desktop = player.GetComponent<CabinDesktop>();
+                if (desktop)
+                {
+                    if (desktop.HeldItem) desktop.ReleaseItem(desktop.HeldItem);
+                    desktop.ReleaseXRItem();
+                }
+                foreach (var hand in player.GetComponentsInChildren<XRBaseInteractor>(true))
+                    if (hand.interactionManager)
+                        hand.interactionManager.CancelInteractorSelection((IXRSelectInteractor)hand);
+            }
+            foreach (var item in oldExports) if (item) Destroy(item);
+            foreach (var root in sessionRoots) if (root && (!player || root != player.gameObject)) Destroy(root);
+            if (fadeCanvas) Destroy(fadeCanvas.gameObject);
+            carried.Clear();
+            exported.Clear();
+            sessionRoots.Clear();
+            rooms.Clear();
+            Destroy(gameObject);
+        }
+
+        /// <summary>Places the persistent player and anything currently held at a room's entrance.</summary>
+        public void PlaceAt(Transform spawn)
+        {
+            if (!spawn || !player || Travelling || shuttingDown) return;
+            CaptureHeldObjects();
+            PlaceRig(spawn);
+            player.interiorAnchor = spawn;
+            Physics.SyncTransforms();
         }
 
         IEnumerator Fade(float from, float to)
@@ -142,7 +199,7 @@ namespace BlackTide.MP1B
         {
             carried.Clear();
             var desktop = player.GetComponent<CabinDesktop>();
-            if (desktop && desktop.HeldItem) carried.Add(desktop.HeldItem.gameObject);
+            if (desktop && desktop.HeldObject) carried.Add(desktop.HeldObject);
             // Both XR hands, including a teammate's ordinary XRGrabInteractable, retain selection.
             foreach (var grab in Object.FindObjectsByType<XRGrabInteractable>(FindObjectsSortMode.None))
             {

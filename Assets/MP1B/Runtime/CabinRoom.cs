@@ -142,7 +142,7 @@ namespace BlackTide.MP1B
                 UpdateProgress();
             }
             if (statusText && Time.unscaledTime > _messageUntil)
-                statusText.text = IsCleared ? "CABIN CLEARED\nTake the key and use the door handle to continue." :
+                statusText.text = IsCleared ? "CABIN CLEARED\nTake the key and walk through the open doorway." :
                     "Solve in any order.\nBell signal  •  Captain's log  •  Symbol seal";
         }
 
@@ -221,7 +221,7 @@ namespace BlackTide.MP1B
             }
             else if (sound && exitSound) sound.PlayOneShot(exitSound);
             StartCoroutine(TurnExitLock());
-            ShowMessage("CABIN CLEARED. You may take back the key. Press the door handle to continue.");
+            ShowMessage("CABIN CLEARED. You may take back the key. Walk through the open doorway to continue.");
             CompletionChanged?.Invoke(true);
             onCabinCleared.Invoke();
         }

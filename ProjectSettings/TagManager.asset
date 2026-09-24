@@ -2,17 +2,27 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!78 &1
 TagManager:
-  serializedVersion: 2
-  tags: []
+  serializedVersion: 3
+  tags:
+  - PlayerHand
+  - Key1
+  - MovingTarget
+  - Rope
+  - Sword
+  - Ground
+  - Collectible
+  - Key
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Key1
   - Water
   - UI
-  - 
-  - 
+  - Key2
+  - Key3
+  - MirrorOnly
+  - hidden
   - 
   - 
   - 
@@ -50,27 +60,4 @@ TagManager:
   - Light Layer 5
   - Light Layer 6
   - Light Layer 7
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  m_MigratedRenderPipelines: []

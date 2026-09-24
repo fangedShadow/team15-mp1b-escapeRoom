@@ -88,3 +88,23 @@ Screenshots/
 /Assets/MP1B/Editor/CabinVerification.cs.meta
 /Assets/MP1B/Editor/CabinBellUpdate.cs
 /Assets/MP1B/Editor/CabinBellUpdate.cs.meta
+
+# Local integration outputs
+/.utmp/
+/AndriodBuild/
+/Verification/
+/Logs/
+/Builds/
+/mono_crash*
+/*.slnx
+
+/Assets/TeamGame/Editor/CombinedVerification.cs
+/Assets/TeamGame/Editor/CombinedVerification.cs.meta
+
+/.vsconfig
+
+# One-off local asset repair utilities
+/Assets/TeamRooms/Storage/Editor/
+/Assets/TeamRooms/Storage/Editor.meta
+/Assets/AureDevGames/Water Stylized Shader Orto & Perspective Camera/Editor/
+/Assets/AureDevGames/Water Stylized Shader Orto & Perspective Camera/Editor.meta

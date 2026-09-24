@@ -2,24 +2,28 @@ using UnityEngine;
 
 public class shipHandler : MonoBehaviour
 {
-    public float shipSpeed = 0.05f, gravity = 0.02f, orbitRadius = 0.05f, orbitSpeed = 1f;
+    public float shipSpeed = 2f;
+    public float acceleration = 4f, deceleration = 6f, arrivalDistance = 0.08f;
     public float boundaryPadding = 0.25f;
-    public float orbitDuration = 5f;
-    public GameObject spawnEffectPrefab, arrivalEffectPrefab, orbitEffectPrefab, collisionEffectPrefab;
-    public AudioSource spawnSound, arrivalSound, orbitSound, collisionSound;
+    public float wrongLocationLifetime = 5f;
+    public GameObject orbitEffectPrefab, collisionEffectPrefab;
+    public AudioSource orbitSound, collisionSound;
+    public GameObject successKeyPrefab;
+    public Vector3 successKeyPosition = new Vector3(-4.5f, 4f, 3.5f);
+    public bool rewardOnArrival;
+    public ActionHandler puzzleHandler;
 
     private Vector3 targetPosition;
     private Rigidbody rb;
     private float collisionCooldown = 0f;
-    private float orbitAngle;
-    private float orbitTimer;
+    private float wrongLocationTimer;
+    private Vector3 localVelocity;
     private bool isDestroyed;
     
     // Map bounds to stay within
     private float boundXMin = -4.6f, boundXMax = 4.6f, boundZMin = -4f, boundZMax = 4f;
     
-    private enum ShipState { Spawning, Traveling, Arrived, Orbiting }
-    private ShipState currentState = ShipState.Spawning;
+    private bool hasArrived;
 
     void Awake()
     {
@@ -42,18 +46,6 @@ public class shipHandler : MonoBehaviour
             rb.linearVelocity = Vector3.zero;
         }
         
-        if (spawnEffectPrefab != null)
-            SpawnEffect(spawnEffectPrefab);
-        
-        if (spawnSound != null)
-        {
-            spawnSound.enabled = true;
-            spawnSound.Stop();
-            spawnSound.PlayOneShot(spawnSound.clip);
-            Debug.Log("Sound played: " + spawnSound.clip.name);
-        }
-        
-        Debug.Log("Ship spawned at: " + transform.localPosition + ", Target: " + targetPosition);
     }
 
     void Update()
@@ -61,99 +53,85 @@ public class shipHandler : MonoBehaviour
         if (collisionCooldown > 0)
             collisionCooldown -= Time.deltaTime;
 
-        switch (currentState)
+        if (hasArrived)
         {
-            case ShipState.Spawning:
-                currentState = ShipState.Traveling;
-                break;
+            wrongLocationTimer += Time.deltaTime;
+            if (wrongLocationTimer >= wrongLocationLifetime)
+                DestroyShip();
         }
     }
 
     void FixedUpdate()
     {
-        if (currentState == ShipState.Traveling)
+        if (!hasArrived)
         {
             TravelToTarget();
-        }
-        else if (currentState == ShipState.Orbiting)
-        {
-            OrbitTarget();
         }
     }
 
     void TravelToTarget()
     {
-        Vector3 currentPosition = transform.localPosition;
+        Vector3 currentPosition = transform.parent != null
+            ? transform.parent.InverseTransformPoint(transform.position)
+            : transform.position;
         Vector3 offset = targetPosition - currentPosition;
-        offset.y = 0;
         float distanceToTarget = offset.magnitude;
 
-        if (distanceToTarget <= orbitRadius)
+        if (distanceToTarget <= arrivalDistance)
         {
-            EnterOrbit();
+            MoveToLocalPosition(targetPosition);
+            ArriveAtTarget();
             return;
         }
 
-        Vector3 nextPosition = currentPosition + offset.normalized * Mathf.Min(shipSpeed * Time.fixedDeltaTime, distanceToTarget - orbitRadius);
-        nextPosition.y = targetPosition.y;
+        float stoppingDistance = (localVelocity.sqrMagnitude / (2f * Mathf.Max(deceleration, 0.01f)));
+        float accelerationRate = distanceToTarget <= stoppingDistance ? deceleration : acceleration;
+        Vector3 desiredVelocity = offset.normalized * shipSpeed;
+        localVelocity = Vector3.MoveTowards(localVelocity, desiredVelocity, accelerationRate * Time.fixedDeltaTime);
+        Vector3 nextPosition = currentPosition + localVelocity * Time.fixedDeltaTime;
         MoveToLocalPosition(nextPosition);
     }
 
-    void EnterOrbit()
+    void ArriveAtTarget()
     {
-        Vector3 offset = transform.localPosition - targetPosition;
-        offset.y = 0;
-        orbitAngle = offset.sqrMagnitude > 0.0001f
-            ? Mathf.Atan2(offset.z, offset.x)
-            : 0f;
-        MoveToLocalPosition(targetPosition + new Vector3(Mathf.Cos(orbitAngle), 0, Mathf.Sin(orbitAngle)) * orbitRadius);
-        currentState = ShipState.Arrived;
+        localVelocity = Vector3.zero;
+        hasArrived = true;
 
-        if (arrivalEffectPrefab != null)
-            SpawnEffect(arrivalEffectPrefab);
+        Debug.Log("Ship reached " + (rewardOnArrival ? "the correct" : "an incorrect") + " location.");
 
-        if (arrivalSound != null)
+        if (rewardOnArrival && orbitEffectPrefab != null)
         {
-            arrivalSound.enabled = true;
-            arrivalSound.Stop();
-            arrivalSound.PlayOneShot(arrivalSound.clip);
-        }
-        
-        if (orbitEffectPrefab != null)
             SpawnEffect(orbitEffectPrefab);
-        
-        if (orbitSound != null)
+        }
+
+        if (rewardOnArrival && orbitSound != null && orbitSound.clip != null)
         {
             orbitSound.enabled = true;
             orbitSound.Stop();
             orbitSound.PlayOneShot(orbitSound.clip);
-            Debug.Log("Sound played: " + orbitSound.clip.name);
         }
-        
-        currentState = ShipState.Orbiting;
-        orbitTimer = 0f;
-    }
 
-    void OrbitTarget()
-    {
-        orbitTimer += Time.fixedDeltaTime;
-        if (orbitTimer >= orbitDuration)
+        if (rewardOnArrival && puzzleHandler != null)
+            puzzleHandler.TryCreateMapReward();
+
+        if (rewardOnArrival && puzzleHandler == null && successKeyPrefab != null && transform.parent != null)
         {
-            DestroyShip();
-            return;
-        }
+            GameObject key = Instantiate(
+                successKeyPrefab,
+                transform.parent.TransformPoint(successKeyPosition),
+                transform.parent.rotation,
+                transform.parent
+            );
 
-        orbitAngle += orbitSpeed * Time.fixedDeltaTime;
-        Vector3 orbitPosition = targetPosition + new Vector3(Mathf.Cos(orbitAngle), 0, Mathf.Sin(orbitAngle)) * orbitRadius;
-        MoveToLocalPosition(orbitPosition);
+            if (key.GetComponent<KeyItem>() == null)
+                key.AddComponent<KeyItem>();
+        }
     }
 
     void MoveToLocalPosition(Vector3 localPosition)
     {
         localPosition.x = Mathf.Clamp(localPosition.x, boundXMin, boundXMax);
         localPosition.z = Mathf.Clamp(localPosition.z, boundZMin, boundZMax);
-        localPosition.y = targetPosition.y;
-
         if (rb != null)
             rb.MovePosition(transform.parent != null ? transform.parent.TransformPoint(localPosition) : localPosition);
         else
@@ -180,12 +158,10 @@ public class shipHandler : MonoBehaviour
                 Instantiate(collisionEffectPrefab, effectPosition, transform.rotation);
             }
             
-            if (collisionSound != null)
+            if (collisionSound != null && collisionSound.clip != null)
             {
                 AudioSource.PlayClipAtPoint(collisionSound.clip, transform.position, collisionSound.volume);
             }
-            
-            Debug.Log("Ship collision detected! Destroying both ships");
             
             collisionCooldown = 1f;
             otherShip.collisionCooldown = 1f;
@@ -210,13 +186,11 @@ public class shipHandler : MonoBehaviour
 
     public void SetTargetPosition(Vector3 target)
     {
-        float orbitMargin = orbitRadius + boundaryPadding;
         targetPosition = new Vector3(
-            Mathf.Clamp(target.x, boundXMin + orbitMargin, boundXMax - orbitMargin),
+            Mathf.Clamp(target.x, boundXMin, boundXMax),
             target.y,
-            Mathf.Clamp(target.z, boundZMin + orbitMargin, boundZMax - orbitMargin)
+            Mathf.Clamp(target.z, boundZMin, boundZMax)
         );
-        currentState = ShipState.Traveling;
     }
     public void SetMapBounds(float xMin, float xMax, float zMin, float zMax)
     {
