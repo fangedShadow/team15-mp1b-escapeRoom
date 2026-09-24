@@ -45,3 +45,9 @@ Desktop.ini
 /Assets/Resources/PerformanceTestRunInfo.json.meta
 /Assets/Resources/PerformanceTestRunSettings.json
 /Assets/Resources/PerformanceTestRunSettings.json.meta
+
+!/Builds/
+/Builds/*
+!/Builds/Quest/
+/Builds/Quest/*
+!/Builds/Quest/BlackTideTeam15.apk

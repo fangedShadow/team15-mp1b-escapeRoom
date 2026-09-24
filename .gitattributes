@@ -89,3 +89,4 @@
 *.tar filter=lfs diff=lfs merge=lfs -text
 
 *.jpeg filter=lfs diff=lfs merge=lfs -text
+Builds/Quest/BlackTideTeam15.apk filter=lfs diff=lfs merge=lfs -text
