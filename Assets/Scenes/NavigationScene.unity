@@ -5191,7 +5191,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: "To Play \nPress A to Jump\nPress B to Spawn Ship\nPress Y to change light
-    color\nPress Right Trigger to Interact\nPress  Grip to Grab Objects\nLook for
+    color\nPress Right Trigger to Interact\nPress  Grip to Grab Objects\nRed highlighted
+    Objects are grabblable\nGreen highlighted keys are grabbable keys \nLook for
     Clues around the room\nPress Left Tigger to exit\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
