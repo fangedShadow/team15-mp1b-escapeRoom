@@ -6,6 +6,7 @@ public class MirrorReachZone : MonoBehaviour
 {
     public Transform mirrorPlane;
     public UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable realKeyGrab;
+    public UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable handMirrorGrab;
 
     private readonly HashSet<Collider> frontHands = new HashSet<Collider>();
     private readonly HashSet<Collider> crossedHands = new HashSet<Collider>();
@@ -22,9 +23,7 @@ public class MirrorReachZone : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Mirror zone entered by: " + other.name);
-
-        if (mirrorPlane == null || !other.CompareTag("PlayerHand"))
+        if (!other.CompareTag("PlayerHand"))
             return;
 
         Vector3 toHand = other.transform.position - mirrorPlane.position;
@@ -50,7 +49,13 @@ public class MirrorReachZone : MonoBehaviour
 
         if (side < 0f)
         {
-            crossedHands.Add(other);
+            if (handMirrorGrab != null)
+                handMirrorGrab.enabled = false;
+
+            if (realKeyGrab != null)
+                realKeyGrab.enabled = true;
+
+            Debug.Log("Hand crossed through mirror");
         }
         else
             crossedHands.Remove(other);
@@ -67,10 +72,14 @@ public class MirrorReachZone : MonoBehaviour
         frontHands.Remove(other);
         crossedHands.Remove(other);
 
-        // Player reached through but did NOT take the key.
-        if (!keyTaken && realKeyGrab != null)
+        if (!keyTaken)
         {
-            realKeyGrab.enabled = crossedHands.Count > 0;
+            if (realKeyGrab != null)
+                realKeyGrab.enabled = false;
+
+            if (handMirrorGrab != null)
+                handMirrorGrab.enabled = true;
+
             Debug.Log("Hand left mirror without key");
         }
     }
@@ -78,6 +87,10 @@ public class MirrorReachZone : MonoBehaviour
     private void OnKeyGrabbed(SelectEnterEventArgs args)
     {
         keyTaken = true;
+
+        if (handMirrorGrab != null)
+            handMirrorGrab.enabled = true;
+
         Debug.Log("Key successfully taken from mirror");
     }
 
