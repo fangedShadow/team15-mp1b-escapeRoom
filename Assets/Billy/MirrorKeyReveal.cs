@@ -30,6 +30,8 @@ public class MirrorKeyReveal : MonoBehaviour
 
         if (grab != null)
         {
+            // The reach zone can start inactive, so gate the key here as well.
+            grab.enabled = false;
             grab.selectEntered.AddListener(OnGrabbed);
             grab.selectExited.AddListener(OnReleased);
         }

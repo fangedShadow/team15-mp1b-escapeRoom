@@ -23,7 +23,7 @@ public class MirrorReachZone : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!other.CompareTag("PlayerHand"))
+        if (mirrorPlane == null || !other.CompareTag("PlayerHand"))
             return;
 
         Vector3 toHand = other.transform.position - mirrorPlane.position;
@@ -49,13 +49,7 @@ public class MirrorReachZone : MonoBehaviour
 
         if (side < 0f)
         {
-            if (handMirrorGrab != null)
-                handMirrorGrab.enabled = false;
-
-            if (realKeyGrab != null)
-                realKeyGrab.enabled = true;
-
-            Debug.Log("Hand crossed through mirror");
+            crossedHands.Add(other);
         }
         else
             crossedHands.Remove(other);
@@ -75,10 +69,7 @@ public class MirrorReachZone : MonoBehaviour
         if (!keyTaken)
         {
             if (realKeyGrab != null)
-                realKeyGrab.enabled = false;
-
-            if (handMirrorGrab != null)
-                handMirrorGrab.enabled = true;
+                realKeyGrab.enabled = crossedHands.Count > 0;
 
             Debug.Log("Hand left mirror without key");
         }
@@ -87,9 +78,6 @@ public class MirrorReachZone : MonoBehaviour
     private void OnKeyGrabbed(SelectEnterEventArgs args)
     {
         keyTaken = true;
-
-        if (handMirrorGrab != null)
-            handMirrorGrab.enabled = true;
 
         Debug.Log("Key successfully taken from mirror");
     }
