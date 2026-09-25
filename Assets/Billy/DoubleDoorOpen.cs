@@ -13,7 +13,7 @@ public class DoubleDoorOpen : MonoBehaviour
 
     public void OpenDoor()
     {
-        if (isOpen)
+        if (isOpen || leftDoor == null || rightDoor == null)
             return;
 
         isOpen = true;
