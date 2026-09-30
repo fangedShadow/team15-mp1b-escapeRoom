@@ -327,6 +327,7 @@ MonoBehaviour:
   exteriorAnchor: {fileID: 0}
   moveSpeed: 2.5
   snapAngle: 30
+  vrHeightOffset: 0.15
 --- !u!114 &6635829187025529454
 MonoBehaviour:
   m_ObjectHideFlags: 0

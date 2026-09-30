@@ -24,6 +24,9 @@ namespace BlackTide
         public Transform exteriorAnchor;
         public float moveSpeed = 2.5f;
         public float snapAngle = 30f;
+        [Range(0f, .5f)]
+        [Tooltip("Extra eye and hand height in metres for a real VR headset. Desktop and simulator height are unchanged.")]
+        public float vrHeightOffset;
         public bool IsOutside { get; private set; }
         public bool IsXR { get; private set; }
         public bool IsSimulatedXR { get; private set; }
@@ -38,6 +41,7 @@ namespace BlackTide
         bool turnLatched;
         bool modeSet;
         bool diagnosticRequested;
+        Transform vrHeightRoot;
 
         void OnEnable()
         {
@@ -87,8 +91,23 @@ namespace BlackTide
                 pitch = 0f;
             }
             else origin.RequestedTrackingOriginMode = XROrigin.TrackingOriginMode.Floor;
+            ApplyVRHeightOffset();
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+        }
+        void ApplyVRHeightOffset()
+        {
+            float height = IsXR && !IsSimulatedXR ? Mathf.Clamp(vrHeightOffset, 0f, .5f) : 0f;
+            if (!vrHeightRoot && height > 0f)
+            {
+                // XROrigin owns the floor offset; tracked pose drivers own the head and hands.
+                // A separate parent preserves both while moving their shared tracking space.
+                var floor = origin.CameraFloorOffsetObject.transform;
+                vrHeightRoot = new GameObject("VR Height Offset").transform;
+                vrHeightRoot.SetParent(floor.parent, false);
+                floor.SetParent(vrHeightRoot, false);
+            }
+            if (vrHeightRoot) vrHeightRoot.localPosition = Vector3.up * height;
         }
         void UpdateSimulationInputFilter(bool simulated)
         {
@@ -125,6 +144,7 @@ namespace BlackTide
         void Update()
         {
             if (Time.unscaledTime >= refreshAt) { refreshAt = Time.unscaledTime + .5f; RefreshMode(); }
+            ApplyVRHeightOffset();
             if (diagnosticRequested || (Keyboard.current != null && Keyboard.current.f8Key.wasPressedThisFrame))
             { diagnosticRequested = false; PrintXRInputReport(); }
             if (Team15.TeamSession.GameplayBlocked) return;
@@ -167,8 +187,8 @@ namespace BlackTide
             Vector3 forward = Vector3.ProjectOnPlane(view.transform.forward, Vector3.up).normalized;
             Vector3 right = Vector3.Cross(Vector3.up, forward);
             Vector3 move = (forward * input.y + right * input.x) * moveSpeed;
-            body.height = Mathf.Clamp(view.transform.localPosition.y + origin.CameraFloorOffsetObject.transform.localPosition.y, 1f, 2.2f);
             Vector3 eye = transform.InverseTransformPoint(view.transform.position);
+            body.height = Mathf.Clamp(eye.y, 1f, 2.2f);
             body.center = new Vector3(eye.x, body.height * .5f + .02f, eye.z);
             move.y = -2f;
             body.Move(move * Time.deltaTime);
